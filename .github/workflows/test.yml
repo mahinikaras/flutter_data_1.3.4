@@ -1,0 +1,42 @@
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux
+          - windows
+          - macos
+        include:
+          - platform: linux
+            os: ubuntu-latest
+          - platform: windows
+            os: windows-latest
+          - platform: macos
+            os: macos-latest
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: dart-lang/setup-dart@v1.3
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: dart pub get
+      - name: Run tests
+        run: dart test --reporter expanded ${{ matrix.dartTestArgs }}
+      - name: Generate coverage
+        if: runner.os == 'Linux'
+        run: dart run test_cov
+      - name: Send coverage report to codecov
+        if: runner.os == 'Linux'
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
