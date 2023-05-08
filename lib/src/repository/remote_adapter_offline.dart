@@ -30,7 +30,7 @@ mixin _RemoteAdapterOffline<T extends DataModel<T>> on _RemoteAdapter<T> {
     // default key to type#s3mth1ng
     final offlineKey = key ?? DataHelpers.generateKey(internalType);
     assert(offlineKey.startsWith(internalType));
-
+    print('flutter data : calling send request');
     // execute request
     return await super.sendRequest<R>(
       uri,
@@ -58,6 +58,8 @@ mixin _RemoteAdapterOffline<T extends DataModel<T>> on _RemoteAdapter<T> {
         return onSuccess?.call(data);
       },
       onError: (e) {
+        print('flutter data : error in sending request');
+        print('flutter data : e.error ${e.error}');
         if (isNetworkError(e.error)) {
           // queue a new operation if this is
           // a network error and we're offline
@@ -125,7 +127,7 @@ mixin _RemoteAdapterOffline<T extends DataModel<T>> on _RemoteAdapter<T> {
     return _err.startsWith('SocketException') ||
         _err.startsWith('Connection closed before full header was received') ||
         _err.startsWith('HandshakeException') ||
-        _err.startsWith('DataException');
+        _err.startsWith("Failed host lookup");
   }
 
   @protected
