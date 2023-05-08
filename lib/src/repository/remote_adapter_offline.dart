@@ -61,6 +61,7 @@ mixin _RemoteAdapterOffline<T extends DataModel<T>> on _RemoteAdapter<T> {
         if (isNetworkError(e.error)) {
           // queue a new operation if this is
           // a network error and we're offline
+          print('adding offline operation, offline key : $offlineKey');
           OfflineOperation<T>(
             requestType: requestType,
             offlineKey: offlineKey,
